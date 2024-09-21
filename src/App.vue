@@ -1,45 +1,58 @@
 <script setup>
-import Header from './components/Header.vue';
-import Balance from './components/Balance.vue';
-import IncomeExpense from './components/IncomeExpense.vue';
-import AddTransaction from './components/AddTransaction.vue';
-import {ref, computed} from 'vue'
+  import Header from './components/Header.vue';
+  import Balance from './components/Balance.vue';
+  import IncomeExpense from './components/IncomeExpense.vue';
+  import AddTransaction from './components/AddTransaction.vue';
+  import TransactionList from './components/TransactionList.vue';
+  import {ref, computed} from 'vue'
 
-//array 
-const transactions = ref([
-  {id: 1, text:'Paycheck', amount: 700.00},
-  {id: 2, text:'Water Bill', amount: -72.83},
-  {id: 3, text:'Electic Bill', amount: -153.89},
-  {id: 4, text:'Returned Item', amount: 20.00},
-])
+  //array 
+  const transactions = ref([])
 
-//x represents one element in the transaction
-//sum is a variable used to display the total sum of the array
-const sum = computed(()=>{
-  return transactions.value.reduce((acc, x) =>{
-    //running total 
-    return acc+x.amount
-  },0) 
-})
+  //x represents one element in the transaction
+  //sum is a variable used to display the total sum of the array
+  const sum = computed(()=>{
+    return transactions.value.reduce((acc, x) =>{
+      //running total 
+      return acc+x.amount
+    },0) 
+  })
 
-const moneyIn = computed(()=>{
-  return transactions.value
-  .filter((x)=>x.amount>0)
-  .reduce((acc, x) =>{
-    //running total 
-    return acc+x.amount
-  },0) 
-})
+  const moneyIn = computed(()=>{
+    return transactions.value
+    .filter((x)=>x.amount>0)
+    .reduce((acc, x) =>{
+      //running total 
+      return acc+x.amount
+    },0) 
+  })
 
-const moneyOut = computed(()=>{
-  return transactions.value
-  .filter((x)=>x.amount<0)
-  .reduce((acc, x) =>{
-    //running total 
-    return acc+x.amount
-  },0) 
-})
+  const moneyOut = computed(()=>{
+    return transactions.value
+    .filter((x)=>x.amount<0)
+    .reduce((acc, x) =>{
+      //running total 
+      return acc+x.amount
+    },0) 
+  })
+  
+  const handleTransaction = (transactionData) => {
+    transactions.value.push({
+      text: transactionData.text,
+      amount: transactionData.amount,
+    })
+  }
 
+  const generateID = () =>{
+    return Math.floor(Math.random()*10000000)
+  }
+  
+  //setting up the x to delete the lists of expenses
+  const handleDelete = (id) => {
+    transactions.value = transactions.value.filter((x) => x.id !== id)
+  }
+
+ 
 </script>
 
 <template>
@@ -47,7 +60,8 @@ const moneyOut = computed(()=>{
   <div class="container">
     <Balance :total="sum"></Balance>
     <IncomeExpense :income="moneyIn" :expense="moneyOut"></IncomeExpense>
-    <AddTransaction></AddTransaction>
+    <AddTransaction @transactionSubmitted="handleTransaction"></AddTransaction>
+    <TransactionList :transactions="transactions" @transactionDeleted="handleDelete"></TransactionList>
   </div>
 
 
