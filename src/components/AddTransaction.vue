@@ -19,8 +19,6 @@
         amount.value = ''
     }
 
-
-
 </script>
 
 <template>

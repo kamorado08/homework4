@@ -44,10 +44,6 @@
     saveToLocalStorage()
   }
 
-  const generateID = () =>{
-    return Math.floor(Math.random()*10000000)
-  }
-
   //setting up the x to delete the lists of expenses
   const handleDelete = (id) => {
     transactions.value = transactions.value.filter((x) => x.id !== id)
